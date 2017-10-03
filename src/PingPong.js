@@ -5,35 +5,71 @@ module.exports = class PingPong {
     this.events = events
 
     this.worldSize = 8
-    this.speed = {x: -1, y: -1}
-
-    this.rackets = [6, 0]
     this.racketSize = 2
 
-    this.updateBall()
+    this.start()
     this.subscribe()
     this.loop()
   }
 
   loop () {
     setInterval(() => {
-      this.checkCollision()
+      this.checkWallsCollision()
+      this.checkRacketsCollision()
       this.updateBall()
       this.emit()
     }, 500)
   }
 
-  checkCollision () {
-    const nextPosX = this.ball.x + this.speed.x
-    const nextPosY = this.ball.y + this.speed.y
+  start () {
+    this.ball = false
+    this.speed = {x: -1, y: -1}
+    this.rackets = [0, 0]
 
-    if (nextPosX < 0 || nextPosX >= this.worldSize) {
+    this.updateBall()
+  }
+
+  ballNextPosition () {
+    return {
+      x: this.ball.x + this.speed.x,
+      y: this.ball.y + this.speed.y
+    }
+  }
+
+  checkWallsCollision () {
+    const nextPos = this.ballNextPosition()
+
+    // horizontal walls - bounce
+    if (nextPos.x < 0 || nextPos.x >= this.worldSize) {
       this.speed.x *= -1
     }
 
-    if (nextPosY < 0 || nextPosY >= this.worldSize) {
+    // vertical walls (behind rackets) - restart the game
+    if (nextPos.y < 0 || nextPos.y >= this.worldSize) {
+      this.start()
+    }
+  }
+
+  checkRacketsCollision () {
+    const nextPos = this.ballNextPosition()
+
+    const racketCells = []
+    this.rackets.forEach((x, racket) => {
+      const y = racket === 0 ? 0 : this.worldSize - 1
+
+      // racket size
+      for (let i = 0; i < this.racketSize; i++) {
+        racketCells.push({x: x + i, y})
+      }
+    })
+
+    const isNext = !!racketCells.find(
+      cell => cell.x === nextPos.x && cell.y === nextPos.y
+    )
+    if (isNext) {
       this.speed.y *= -1
     }
+
   }
 
   updateBall () {
@@ -58,7 +94,6 @@ module.exports = class PingPong {
         if (this.rackets[player] < this.worldSize - this.racketSize)
           this.rackets[player]++
         break
-
     }
   }
 
@@ -76,8 +111,10 @@ module.exports = class PingPong {
     this.rackets.forEach((x, racket) => {
       const y = racket === 0 ? 0 : this.worldSize - 1
 
-      world[x][y] = 1
-      world[x+1][y] = 1
+      // racket size
+      for (let i = 0; i < this.racketSize; i++) {
+        world[x + i][y] = 1
+      }
     })
 
     return world
