@@ -61,6 +61,6 @@ module.exports = class Matrix {
   }
 
   subscribe () {
-    this.events.on('display', (picture) => this.setPicture(picture)) 
+    this.events.on('display', (picture) => this.setPicture(picture))
   }
 }

@@ -45,7 +45,7 @@ module.exports = class Joystick {
     if (!this.emitLock && this.current) {
       this.emitLock = true
 
-      this.events.emit('move', this.current, player)
+      this.events.emit('move', this.current, this.player)
     }
   }
 }
