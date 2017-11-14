@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "keypress": "^0.2.1",
-    "mcp3008.js": "^0.4.0"
+    "mcp3008.js": "^0.4.0",
+    "johnny-five": "^0.11.6",
+    "raspi-io": "^8.1.0"
   }
 }
