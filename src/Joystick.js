@@ -2,23 +2,22 @@ const Mcp3008 = require('mcp3008.js')
 const adc = new Mcp3008()
 
 module.exports = class Joystick {
-  constructor (events) {
+  constructor (events, player, channel) {
     this.events = events
+    this.player = player
+    this.channel = channel
+
     this.current = null
 
     this.emitLock = false
     this.lockX = false
-    this.lockY = false
 
     setInterval(() => this.loop(), 1)
   }
 
   loop () {
-    adc.read(1, value => {
+    adc.read(this.channel, value => {
       this.checkX(value)
-    })
-    adc.read(0, value => {
-      this.checkY(value)
     })
 
     this.emit()
@@ -30,7 +29,7 @@ module.exports = class Joystick {
     if (x > 750) {
       this.lockX = true
       this.current = 'right'
-    } 
+    }
     else if (x < 250) {
       this.lockX = true
       this.current = 'left'
@@ -42,29 +41,11 @@ module.exports = class Joystick {
     }
   }
 
-  checkY (y) {
-    if (this.lockX) return
-
-    if (y > 750) {
-      this.lockY = true
-      this.current = 'up' 
-    }
-    else if (y < 250) {
-      this.lockY = true
-      this.current = 'down'
-    }
-    else {
-      this.emitLock = false
-      this.lockY = false
-      this.current = null
-    }
-  }
-
   emit () {
     if (!this.emitLock && this.current) {
       this.emitLock = true
-      
-      this.events.emit('move', this.current)
+
+      this.events.emit('move', this.current, player)
     }
   }
 }
