@@ -7,7 +7,9 @@ module.exports = class PingPong {
     this.worldSize = 8
     this.racketSize = 2
 
-    this.start()
+    this.rackets = [0, 0]
+
+    this.restart()
     this.subscribe()
     this.loop()
   }
@@ -21,10 +23,9 @@ module.exports = class PingPong {
     }, 250)
   }
 
-  start () {
+  restart () {
     this.ball = false
     this.speed = {x: -1, y: -1}
-    this.rackets = [0, 0]
 
     this.updateBall()
   }
@@ -46,7 +47,7 @@ module.exports = class PingPong {
 
     // vertical walls (behind rackets) - restart the game
     if (nextPos.y < 0 || nextPos.y >= this.worldSize) {
-      this.start()
+      this.restart()
     }
   }
 
@@ -69,7 +70,6 @@ module.exports = class PingPong {
     if (isNext) {
       this.speed.y *= -1
     }
-
   }
 
   updateBall () {
@@ -84,7 +84,7 @@ module.exports = class PingPong {
     }
   }
 
-  move (direction, player) {
+  moveRacket (direction, player) {
     switch (direction) {
       case 'up':
         if (this.rackets[player] > 0)
@@ -121,7 +121,7 @@ module.exports = class PingPong {
   }
 
   subscribe () {
-    this.events.on('move', (direction, player) => this.move(direction, player))
+    this.events.on('move', (direction, player) => this.moveRacket(direction, player))
   }
 
   emit () {
