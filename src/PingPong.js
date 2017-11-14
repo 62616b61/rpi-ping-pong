@@ -125,9 +125,6 @@ module.exports = class PingPong {
   }
 
   emit () {
-    //this.events.emit('display', this.world())
-
-    //console.log("\x1B[2J")
-    console.log(this.world())
+    this.events.emit('display', this.world())
   }
 }
