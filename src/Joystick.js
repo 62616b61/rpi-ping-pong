@@ -26,11 +26,11 @@ module.exports = class Joystick {
   check (value) {
     if (value > 750) {
       this.lock = true
-      this.current = 'right'
+      this.current = 'down'
     }
     else if (value < 250) {
       this.lock = true
-      this.current = 'left'
+      this.current = 'up'
     }
     else {
       this.emitLock = false
