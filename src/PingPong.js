@@ -18,7 +18,7 @@ module.exports = class PingPong {
       this.checkRacketsCollision()
       this.updateBall()
       this.emit()
-    }, 500)
+    }, 250)
   }
 
   start () {
