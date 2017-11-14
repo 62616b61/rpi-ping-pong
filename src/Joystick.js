@@ -10,33 +10,31 @@ module.exports = class Joystick {
     this.current = null
 
     this.emitLock = false
-    this.lockX = false
+    this.lock = false
 
     setInterval(() => this.loop(), 1)
   }
 
   loop () {
     adc.read(this.channel, value => {
-      this.checkX(value)
+      this.check(value)
     })
 
     this.emit()
   }
 
-  checkX (x) {
-    if (this.lockY) return
-
-    if (x > 750) {
-      this.lockX = true
+  check (value) {
+    if (value > 750) {
+      this.lock = true
       this.current = 'right'
     }
-    else if (x < 250) {
-      this.lockX = true
+    else if (value < 250) {
+      this.lock = true
       this.current = 'left'
     }
     else {
       this.emitLock = false
-      this.lockX = false
+      this.lock = false
       this.current = null
     }
   }

@@ -35,5 +35,6 @@ board.on('ready', () => {
 
   const pingpong = new PingPong(events)
   const joystick0 = new Joystick(events, 0, 0)
-  const joystick1 = new Joystick(events, 1, 1)
+  const joystick1 = new Joystick(events, 1, 3)
+  const matrix = new Matrix(events, register)
 })
